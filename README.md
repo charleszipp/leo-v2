@@ -6,6 +6,7 @@ The pool manager managers a buffer of stateful service instances that can be dyn
 
 ## Technologies
  - Azure Service Fabric 
+ -- Stateful Reliable Services
  - Service Fabric Pool Manager (open-source project currently private)
  - Angular 6
  - Web API 
@@ -14,8 +15,10 @@ The pool manager managers a buffer of stateful service instances that can be dyn
  - CQRS
  - Event Sourcing
  - Domain Driven Design (DDD)
- - Multi-Region Active/Active (coming soon!)
+ - Multi-Region/Multi-Cluster Active/Active (coming soon!)
  - Microservices
+ - Stateful Services
+ - High Availablility
 
 ## Third-Party Integrations
  - [Plaid](https://plaid.com/) (coming soon!)
