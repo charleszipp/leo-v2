@@ -7,11 +7,11 @@ namespace Phase.Providers
 {
     public interface IEventsProvider
     {
-        Task AbortAsync();
+        Task AbortAsync(CancellationToken cancellationToken);
 
-        Task CommitAsync(IEnumerable<IEvent> events);
+        Task CommitAsync(IEnumerable<IEvent> events, CancellationToken cancellationToken);
 
-        Task<IEnumerable<IEvent>> GetAsync(string aggregateId, int fromVersion = -1);
+        Task<IEnumerable<IEvent>> GetAsync(string aggregateId, CancellationToken cancellationToken, int fromVersion = -1);
 
         Task<IEnumerable<IEvent>> GetEventsAsync(CancellationToken cancellationToken);
 

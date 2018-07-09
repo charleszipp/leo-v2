@@ -52,11 +52,15 @@
     <Compile Include="Domains\Repository.cs" />
     <Compile Include="Domains\Session.cs" />
     <Compile Include="IDependencyResolver.cs" />
+    <Compile Include="IPhase.cs" />
     <Compile Include="Mediators\CommandInvoker.cs" />
     <Compile Include="Mediators\IMediator.cs" />
-    <Compile Include="Mediators\LockingMediator.cs" />
     <Compile Include="Mediators\Mediator.cs" />
     <Compile Include="Mediators\QueryInvoker.cs" />
+    <Compile Include="Phase.cs" />
+    <Compile Include="PhaseBuilder.cs" />
+    <Compile Include="PhaseContainer.cs" />
+    <Compile Include="PhaseDecorator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\EventInvoker.cs" />
     <Compile Include="Providers\EventsPublisher.cs" />
