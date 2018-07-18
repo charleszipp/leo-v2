@@ -2,27 +2,39 @@
 using System.Threading.Tasks;
 using Phase.Interfaces;
 using System;
+using Phase.Providers;
+using Phase.Mediators;
+using Phase.Domains;
+using Phase.Publishers;
+using System.Collections.Generic;
 
 namespace Phase
 {
-    public class Phase : IPhase
+    public sealed class Phase : IDisposable
     {
-        private readonly PhaseContainer _container;
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+        private readonly IEventsProvider _eventsProvider;
+        private readonly Mediator _mediator;
+        private readonly Session _session;
+        private readonly EventPublisher _publisher;
 
-        public Phase(PhaseContainer container)
+        public Phase(DependencyResolver resolver, IEventsProvider eventsProvider, Func<string, IDictionary<string, string>> tenantKeysFactory)
         {
-            _container = container;
+            _eventsProvider = eventsProvider;
+            _mediator = new Mediator(resolver);
+            _session = new Session(resolver, _eventsProvider);
+            resolver._session = _session;
+            _publisher = new EventPublisher();
         }
 
-        public async Task ActivateAsync(CancellationToken cancellationToken)
+        public async Task ActivateAsync(string tenantInstanceName, CancellationToken cancellationToken)
         {
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                await _container.EventsProvider.InitializeAsync(cancellationToken).ConfigureAwait(false);
-                var events = await _container.EventsProvider.GetEventsAsync(cancellationToken).ConfigureAwait(false);
-                _container.Publisher.Publish(events);
+                await _eventsProvider.ActivateAsync(tenantInstanceName, cancellationToken).ConfigureAwait(false);
+                var events = await _eventsProvider.GetEventsAsync(cancellationToken).ConfigureAwait(false);
+                _publisher.Publish(events, cancellationToken);
             }
             finally
             {
@@ -35,7 +47,7 @@ namespace Phase
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                await _container.EventsProvider.AbortAsync(cancellationToken);
+                await _eventsProvider.DeactivateAsync(cancellationToken);
             }
             finally
             {
@@ -43,24 +55,26 @@ namespace Phase
             }
         }
 
+        public void Dispose() => _publisher.Dispose();
+
         public async Task<T> ExecuteAsync<T>(ICommand<T> command, CancellationToken cancellationToken)
         {
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                var rvalue = await _container.Mediator.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+                var rvalue = await _mediator.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 // before commit make sure we havent been asked to shut down
                 cancellationToken.ThrowIfCancellationRequested();
-                var events = _container.Session.Flush();
-                await _container.EventsProvider.CommitAsync(events, cancellationToken).ConfigureAwait(false);
-                _container.Publisher.Publish(events);
+                var events = _session.Flush();
+                await _eventsProvider.CommitAsync(events, cancellationToken).ConfigureAwait(false);
+                _publisher.Publish(events, cancellationToken);
 
                 return rvalue;
             }
             catch (Exception)
             {
                 // rollback any new events produced from the command
-                _container.Session.Flush();
+                _session.Flush();
                 throw;
             }
             finally
@@ -74,17 +88,17 @@ namespace Phase
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                await _container.Mediator.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
+                await _mediator.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 // before commit make sure we havent been asked to shut down
                 cancellationToken.ThrowIfCancellationRequested();
-                var events = _container.Session.Flush();
-                await _container.EventsProvider.CommitAsync(events, cancellationToken).ConfigureAwait(false);
-                _container.Publisher.Publish(events);
+                var events = _session.Flush();
+                await _eventsProvider.CommitAsync(events, cancellationToken).ConfigureAwait(false);
+                _publisher.Publish(events, cancellationToken);
             }
             catch(Exception)
             {
                 // rollback any new events produced from the command
-                _container.Session.Flush();
+                _session.Flush();
                 throw;
             }
             finally
@@ -94,6 +108,6 @@ namespace Phase
         }
 
         public Task<TResult> Query<TResult>(IQuery<TResult> query, CancellationToken cancellationToken) => 
-            _container.Mediator.Query(query, cancellationToken);
+            _mediator.Query(query, cancellationToken);
     }
 }

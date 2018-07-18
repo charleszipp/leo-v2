@@ -67,6 +67,9 @@
     <Reference Include="Microsoft.ServiceFabric.Services, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
       <HintPath>..\..\packages\Microsoft.ServiceFabric.Services.3.1.301\lib\net462\Microsoft.ServiceFabric.Services.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject, Version=3.3.4.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Ninject.3.3.4\lib\net45\Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Fabric, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
@@ -85,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Boards.cs" />
+    <Compile Include="BoardService.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +98,20 @@
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Phase.Ninject\Phase.Ninject.csproj">
+      <Project>{1D89D566-C3FA-4A49-9BE7-DF42561E20F5}</Project>
+      <Name>Phase.Ninject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Phase.ServiceFabric\Phase.ServiceFabric.csproj">
+      <Project>{0f4c733d-a689-44cd-94ba-1bb34657ab50}</Project>
+      <Name>Phase.ServiceFabric</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Phase\Phase\Phase.csproj">
+      <Project>{232C5FE9-37B3-45F0-9881-5C1540B02889}</Project>
+      <Name>Phase</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

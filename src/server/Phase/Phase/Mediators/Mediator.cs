@@ -8,14 +8,11 @@ using System.Threading.Tasks;
 
 namespace Phase.Mediators
 {
-    public class Mediator : IMediator
+    internal sealed class Mediator
     {
-        protected readonly DependencyResolver _resolver;
+        private readonly DependencyResolver _resolver;
 
-        public Mediator(DependencyResolver resolver)
-        {
-            _resolver = resolver;
-        }
+        internal Mediator(DependencyResolver resolver) => _resolver = resolver;
 
         public Task<TResult> Query<TResult>(IQuery<TResult> query, CancellationToken cancellationToken)
         {

@@ -1,50 +1,30 @@
 ﻿using Phase.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace Phase.Mediators
 {
-    public abstract class VoidCommandInvoker
+    internal abstract class CommandInvoker<T>
     {
-        public abstract Task InvokeAsync(ICommand command, DependencyResolver resolver, CancellationToken cancellationToken);
-
-        protected TCommandHandler GetCommandHandler<TCommandHandler>(DependencyResolver resolver)
-        {
-            return (TCommandHandler)resolver(typeof(TCommandHandler));
-        }
+        internal abstract Task<T> InvokeAsync(ICommand<T> command, DependencyResolver resolver, CancellationToken cancellationToken);
     }
 
-    public class VoidCommandInvoker<TCommand> : VoidCommandInvoker
-        where TCommand : ICommand
-    {
-        public override Task InvokeAsync(ICommand command, DependencyResolver resolver, CancellationToken cancellationToken)
-        {
-            return GetCommandHandler<IHandleCommand<TCommand>>(resolver)
-                .Execute((TCommand)command, cancellationToken);
-        }
-    }
-
-    public abstract class CommandInvoker<T>
-    {
-        public abstract Task<T> InvokeAsync(ICommand<T> command, DependencyResolver resolver, CancellationToken cancellationToken);
-
-        protected TCommandHandler GetCommandHandler<TCommandHandler>(DependencyResolver resolver)
-        {
-            return (TCommandHandler)resolver(typeof(TCommandHandler));
-        }
-    }
-
-    public class CommandInvoker<TCommand, TReturn> : CommandInvoker<TReturn>
+    internal class CommandInvoker<TCommand, TReturn> : CommandInvoker<TReturn>
         where TCommand : ICommand<TReturn>
     {
-        public override Task<TReturn> InvokeAsync(ICommand<TReturn> command, DependencyResolver resolver, CancellationToken cancellationToken)
-        {
-            return GetCommandHandler<IHandleCommand<TCommand, TReturn>>(resolver)
-                .Execute((TCommand)command, cancellationToken);
-        }
+        internal override Task<TReturn> InvokeAsync(ICommand<TReturn> command, DependencyResolver resolver, CancellationToken cancellationToken) 
+            => resolver.GetCommandHandler<TCommand, TReturn>().Execute((TCommand)command, cancellationToken);
+    }
+
+    internal abstract class VoidCommandInvoker
+    {
+        internal abstract Task InvokeAsync(ICommand command, DependencyResolver resolver, CancellationToken cancellationToken);
+    }
+
+    internal class VoidCommandInvoker<TCommand> : VoidCommandInvoker
+        where TCommand : ICommand
+    {
+        internal override Task InvokeAsync(ICommand command, DependencyResolver resolver, CancellationToken cancellationToken) => 
+            resolver.GetCommandHandler<TCommand>().Execute((TCommand)command, cancellationToken);
     }
 }

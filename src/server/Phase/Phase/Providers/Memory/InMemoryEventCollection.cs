@@ -9,10 +9,10 @@ namespace Phase.Providers.Memory
     {
         private ConcurrentDictionary<string, IEnumerable<InMemoryEventDocument>> _db = new ConcurrentDictionary<string, IEnumerable<InMemoryEventDocument>>();
 
-        public void AddOrUpdateEvents(IEnumerable<IEvent> events, InMemoryEventsProviderConfiguration config)
+        public void AddOrUpdateEvents(IEnumerable<IEvent> events, IDictionary<string, string> tenantKeys)
         {
             var eventsById = events
-                .Select(e => new InMemoryEventDocument(config.ServiceInstanceKeys, e))
+                .Select(e => new InMemoryEventDocument(tenantKeys, e))
                 .GroupBy(doc => doc.Event.AggregateId);
 
             foreach (var e in eventsById)
@@ -39,11 +39,11 @@ namespace Phase.Providers.Memory
             return rvalues;
         }
 
-        public IEnumerable<IEvent> Get(InMemoryEventsProviderConfiguration config)
+        public IEnumerable<IEvent> Get(IDictionary<string, string> tenantKeys)
         {
             return _db
                 .SelectMany(doc => doc.Value)
-                .Where(doc => doc.Keys.SequenceEqual(config.ServiceInstanceKeys))
+                .Where(doc => doc.Keys.SequenceEqual(tenantKeys))
                 .Select(doc => doc.Event)
                 .ToList();
         }

@@ -7,7 +7,7 @@ namespace Phase.Providers
 {
     public interface IEventsProvider
     {
-        Task AbortAsync(CancellationToken cancellationToken);
+        Task DeactivateAsync(CancellationToken cancellationToken);
 
         Task CommitAsync(IEnumerable<IEvent> events, CancellationToken cancellationToken);
 
@@ -15,6 +15,6 @@ namespace Phase.Providers
 
         Task<IEnumerable<IEvent>> GetEventsAsync(CancellationToken cancellationToken);
 
-        Task InitializeAsync(CancellationToken cancellationToken);
+        Task ActivateAsync(string tenantInstanceName, CancellationToken cancellationToken);
     }
 }

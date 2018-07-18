@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DeepCopy, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\DeepCopy.1.0.3\lib\netstandard2.0\DeepCopy.dll</HintPath>
+    </Reference>
     <Reference Include="MongoDB.Bson, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MongoDB.Bson.2.7.0\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
@@ -43,35 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domains\AggregateAttribute.cs" />
+    <Compile Include="DependencyResolver.cs" />
     <Compile Include="Domains\AggregateDescriptor.cs" />
     <Compile Include="Domains\AggregateProxy.cs" />
     <Compile Include="Domains\AggregateRoot.cs" />
-    <Compile Include="Domains\IRepository.cs" />
-    <Compile Include="Domains\ISession.cs" />
-    <Compile Include="Domains\Repository.cs" />
+    <Compile Include="Domains\CommandHandler.cs" />
+    <Compile Include="Domains\PhaseAggregateAttribute.cs" />
     <Compile Include="Domains\Session.cs" />
-    <Compile Include="IDependencyResolver.cs" />
-    <Compile Include="IPhase.cs" />
+    <Compile Include="Publishers\EventPublisher.cs" />
     <Compile Include="Mediators\CommandInvoker.cs" />
-    <Compile Include="Mediators\IMediator.cs" />
     <Compile Include="Mediators\Mediator.cs" />
     <Compile Include="Mediators\QueryInvoker.cs" />
     <Compile Include="Phase.cs" />
-    <Compile Include="PhaseBuilder.cs" />
-    <Compile Include="PhaseContainer.cs" />
-    <Compile Include="PhaseDecorator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\EventInvoker.cs" />
-    <Compile Include="Providers\EventsPublisher.cs" />
-    <Compile Include="Providers\IdemptotentTestingEventsPublisher.cs" />
-    <Compile Include="Providers\IEventPublisher.cs" />
     <Compile Include="Providers\IEventsProvider.cs" />
     <Compile Include="Providers\Memory\InMemoryEventCollection.cs" />
     <Compile Include="Providers\Memory\InMemoryEventDocument.cs" />
     <Compile Include="Providers\Memory\InMemoryEventsProvider.cs" />
-    <Compile Include="Providers\Memory\InMemoryEventsProviderConfiguration.cs" />
-    <Compile Include="Providers\ProviderConfiguration.cs" />
+    <Compile Include="Publishers\EventSubscriber.cs" />
+    <Compile Include="Publishers\IdemptotentTestingEventPublisher.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Phase.Interfaces\Phase.Interfaces.csproj">
