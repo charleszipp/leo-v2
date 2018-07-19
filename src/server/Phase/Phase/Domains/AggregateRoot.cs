@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace Phase.Domains
 {
-    public class AggregateRoot : MarshalByRefObject
+    public class AggregateRoot : MarshalByRefObject, IVolatileState
     {      
     }
 }

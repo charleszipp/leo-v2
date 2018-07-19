@@ -17,9 +17,11 @@ namespace Phase
         private readonly Mediator _mediator;
         private readonly Session _session;
         private readonly EventPublisher _publisher;
+        public DependencyResolver DependencyResolver { get; }
 
-        public Phase(DependencyResolver resolver, IEventsProvider eventsProvider, Func<string, IDictionary<string, string>> tenantKeysFactory)
+        internal Phase(DependencyResolver resolver, IEventsProvider eventsProvider, Func<string, IDictionary<string, string>> tenantKeysFactory)
         {
+            DependencyResolver = resolver;
             _eventsProvider = eventsProvider;
             _mediator = new Mediator(resolver);
             _session = new Session(resolver, _eventsProvider);
@@ -48,6 +50,7 @@ namespace Phase
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
                 await _eventsProvider.DeactivateAsync(cancellationToken);
+                DependencyResolver.ReleaseVolatileStates();
             }
             finally
             {
@@ -107,7 +110,7 @@ namespace Phase
             }
         }
 
-        public Task<TResult> Query<TResult>(IQuery<TResult> query, CancellationToken cancellationToken) => 
+        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken) => 
             _mediator.Query(query, cancellationToken);
     }
 }

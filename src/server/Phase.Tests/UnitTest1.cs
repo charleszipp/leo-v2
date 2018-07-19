@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 using Phase.Tests.Commands;
 using Phase.Interfaces;
 using Phase.Providers.Memory;
+using Phase.Tests.Queries;
+using Phase.Builders;
+using Phase.Tests.Models;
 
 namespace Phase.Tests
 {
@@ -19,12 +22,17 @@ namespace Phase.Tests
 
         public UnitTest1()
         {
-            var kernel = new StandardKernel();
-            kernel.Bind<IHandleCommand<CreateMock>>().To<CreateMockHandler>();
-            var dependencyResolver = new NinjectDependencyResolver(kernel);
+            var dependencyResolver = new NinjectDependencyResolver();
             var eventsProvider = new InMemoryEventsProvider(new InMemoryEventCollection(), TenantKeyFactory);
-            _phase = new Phase(dependencyResolver, eventsProvider, TenantKeyFactory);
-            
+            var builder = new PhaseBuilder(dependencyResolver, eventsProvider, TenantKeyFactory)
+                .WithCommandHandler<CreateMockHandler, CreateMock>()
+                .WithQueryHandler<GetMockHandler, GetMock, GetMockResult>()
+                .WithAggregateRoot<MockAggregate>()
+                .WithReadModel<MockReadModel>();
+
+            //todo: create fluent for registering subscriptions...
+
+            _phase = builder.Build();
         }
 
         private IDictionary<string, string> TenantKeyFactory(string tenantInstanceName) 
@@ -34,13 +42,21 @@ namespace Phase.Tests
         public async Task TestMethod1()
         {
             _cancellationTokenSource = new CancellationTokenSource();
-            await _phase.ActivateAsync(Guid.NewGuid().ToString(), _cancellationTokenSource.Token);
+            var mockId = Guid.NewGuid();
+            await _phase.ActivateAsync(mockId.ToString(), _cancellationTokenSource.Token);
 
-            var command = new CreateMock(Guid.NewGuid(), "Mock 1");
+            var command = new CreateMock(mockId, "Mock 1");
             await _phase.ExecuteAsync(command, _cancellationTokenSource.Token);
 
+            var query = new GetMock();
+            var result = await _phase.QueryAsync(query, _cancellationTokenSource.Token);
+
+            Assert.AreEqual(command.MockName, result.MockName);
 
             await _phase.DeactivateAsync(_cancellationTokenSource.Token);
+
+            var resultAfterDeactivate = await _phase.QueryAsync(query, _cancellationTokenSource.Token);
+            Assert.IsTrue(string.IsNullOrEmpty(resultAfterDeactivate.MockName));
         }
     }
 }

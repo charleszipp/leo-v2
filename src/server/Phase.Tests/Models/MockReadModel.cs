@@ -1,10 +1,11 @@
-﻿using Phase.Interfaces;
+﻿using Phase.Domains;
+using Phase.Interfaces;
 using Phase.Tests.Events;
 using System;
 
 namespace Phase.Tests.Models
 {
-    public class MockReadModel : IHandleEvent<MockCreated>
+    public class MockReadModel : IHandleEvent<MockCreated>, IVolatileState
     {
         public DateTimeOffset CreateDate { get; private set; }
 

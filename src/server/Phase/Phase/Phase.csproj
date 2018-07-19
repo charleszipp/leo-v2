@@ -46,13 +46,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\IPhaseBuilder.cs" />
+    <Compile Include="Builders\PhaseQueryDecorator.cs" />
+    <Compile Include="Builders\PhaseCommandDecorator.cs" />
+    <Compile Include="Builders\PhaseDecorator.cs" />
+    <Compile Include="Builders\PhaseVolatileStateDecorator.cs" />
     <Compile Include="DependencyResolver.cs" />
     <Compile Include="Domains\AggregateDescriptor.cs" />
     <Compile Include="Domains\AggregateProxy.cs" />
     <Compile Include="Domains\AggregateRoot.cs" />
     <Compile Include="Domains\CommandHandler.cs" />
+    <Compile Include="Domains\IVolatileState.cs" />
     <Compile Include="Domains\PhaseAggregateAttribute.cs" />
     <Compile Include="Domains\Session.cs" />
+    <Compile Include="Builders\PhaseBuilder.cs" />
     <Compile Include="Publishers\EventPublisher.cs" />
     <Compile Include="Mediators\CommandInvoker.cs" />
     <Compile Include="Mediators\Mediator.cs" />
