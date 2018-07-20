@@ -11,6 +11,7 @@ using Phase.Providers.Memory;
 using Phase.Tests.Queries;
 using Phase.Builders;
 using Phase.Tests.Models;
+using Phase.Tests.Events;
 
 namespace Phase.Tests
 {
@@ -28,9 +29,8 @@ namespace Phase.Tests
                 .WithCommandHandler<CreateMockHandler, CreateMock>()
                 .WithQueryHandler<GetMockHandler, GetMock, GetMockResult>()
                 .WithAggregateRoot<MockAggregate>()
-                .WithReadModel<MockReadModel>();
-
-            //todo: create fluent for registering subscriptions...
+                .WithReadModel<MockReadModel>()
+                .WithStatefulEventSubscriber<MockCreated, MockReadModel>();
 
             _phase = builder.Build();
         }
@@ -50,7 +50,7 @@ namespace Phase.Tests
 
             var query = new GetMock();
             var result = await _phase.QueryAsync(query, _cancellationTokenSource.Token);
-
+            
             Assert.AreEqual(command.MockName, result.MockName);
 
             await _phase.DeactivateAsync(_cancellationTokenSource.Token);

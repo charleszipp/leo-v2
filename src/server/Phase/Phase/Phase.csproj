@@ -50,6 +50,8 @@
     <Compile Include="Builders\PhaseQueryDecorator.cs" />
     <Compile Include="Builders\PhaseCommandDecorator.cs" />
     <Compile Include="Builders\PhaseDecorator.cs" />
+    <Compile Include="Builders\PhaseStatefulEventSubscriberDecorator.cs" />
+    <Compile Include="Builders\PhaseStatelessEventSubscriberDecorator.cs" />
     <Compile Include="Builders\PhaseVolatileStateDecorator.cs" />
     <Compile Include="DependencyResolver.cs" />
     <Compile Include="Domains\AggregateDescriptor.cs" />

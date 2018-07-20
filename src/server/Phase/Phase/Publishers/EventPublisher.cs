@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Phase.Publishers
 {
-    internal class EventPublisher : IDisposable
+    internal class EventPublisher
     {
-        private List<EventSubscriber> _subscribers = new List<EventSubscriber>();
+        private readonly DependencyResolver _resolver;
 
-        internal void Subscribe<TEvent>(IHandleEvent<TEvent> handler)
-            where TEvent : IEvent => _subscribers.Add(new EventSubscriber<TEvent>(handler));
+        public EventPublisher(DependencyResolver resolver) => _resolver = resolver;
 
         internal void Publish(IEnumerable<IEvent> events, CancellationToken cancellationToken)
         {
@@ -26,12 +25,14 @@ namespace Phase.Publishers
 
         internal virtual void Publish(IEvent @event, CancellationToken cancellationToken)
         {
-            var subscriberType = typeof(EventSubscriber<>).MakeGenericType(@event.GetType());
-            var subscribers = _subscribers.Where(s => subscriberType.IsAssignableFrom(s.GetType()));
-            if(subscribers.Any())
-                Parallel.ForEach(subscribers, (subscriber) => subscriber.Publish(@event));
+            var subscribers = _resolver.GetEventSubscribers(@event);
+            if(subscribers?.Any() ?? false)
+            {
+                foreach(var subscriber in subscribers)
+                {
+                    subscriber.Publish(@event);
+                }
+            }
         }
-
-        public void Dispose() => _subscribers.Clear();
     }
 }

@@ -1,7 +1,9 @@
 ﻿using Phase.Domains;
 using Phase.Interfaces;
+using Phase.Publishers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Phase
 {
@@ -20,7 +22,11 @@ namespace Phase
 
         protected abstract T Single<T>();
 
+        protected abstract IEnumerable<object> GetAll(Type type);
+
         protected abstract void ReleaseAll<T>();
+
+        protected abstract bool IsRegistered<TInterface>();
 
         internal TAggregate GetAggregateRoot<TAggregate>() where TAggregate : AggregateRoot => 
             AggregateProxy<TAggregate>.Create(Single<TAggregate>());
@@ -39,6 +45,16 @@ namespace Phase
             return rvalue;
         }
 
+        internal IEnumerable<EventSubscriber> GetEventSubscribers(IEvent @event)
+        {
+            var eventType = @event.GetType();
+            var subscriberType = typeof(EventSubscriber<>).MakeGenericType(eventType);
+            var handlerType = typeof(IHandleEvent<>).MakeGenericType(eventType);
+            return GetAll(handlerType)
+                .Select(handler => Activator.CreateInstance(subscriberType, handler))
+                .Cast<EventSubscriber>();
+        }
+
         internal IHandleQuery<TQuery, TResult> GetQueryHandler<TQuery, TResult>() 
             where TQuery : IQuery<TResult> => 
             Single<IHandleQuery<TQuery, TResult>>();
@@ -50,13 +66,28 @@ namespace Phase
 
         internal void RegisterCommandHandler<TCommandHandler, TCommand, TResult>()
             where TCommandHandler : class, IHandleCommand<TCommand, TResult>
-            where TCommand : ICommand<TResult> =>
+            where TCommand : ICommand<TResult> => 
             RegisterTransient<IHandleCommand<TCommand, TResult>, TCommandHandler>();
 
         internal void RegisterQueryHandler<TQueryHandler, TQuery, TResult>()
             where TQueryHandler : class, IHandleQuery<TQuery, TResult>
             where TQuery : IQuery<TResult> =>
             RegisterTransient<IHandleQuery<TQuery, TResult>, TQueryHandler>();
+
+        internal void RegisterStatefulEventHandler<TEvent, TEventHandler>()
+            where TEvent : IEvent
+            where TEventHandler : class, IHandleEvent<TEvent>, IVolatileState
+        {
+            if (!IsRegistered<TEventHandler>())
+                RegisterSingleton<TEventHandler, TEventHandler>();
+
+            CopySingleton<TEventHandler, IHandleEvent<TEvent>>();
+        }
+
+        internal void RegisterStatelessEventHandler<TEvent, TEventHandler>()
+            where TEvent : IEvent
+            where TEventHandler : class, IHandleEvent<TEvent> => 
+            RegisterTransient<IHandleEvent<TEvent>, TEventHandler>();
 
         internal void RegisterVolatileState<T>()
             where T : class, IVolatileState

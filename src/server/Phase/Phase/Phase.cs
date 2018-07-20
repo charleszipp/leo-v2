@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Phase
 {
-    public sealed class Phase : IDisposable
+    public sealed class Phase
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly IEventsProvider _eventsProvider;
@@ -26,7 +26,7 @@ namespace Phase
             _mediator = new Mediator(resolver);
             _session = new Session(resolver, _eventsProvider);
             resolver._session = _session;
-            _publisher = new EventPublisher();
+            _publisher = new EventPublisher(resolver);
         }
 
         public async Task ActivateAsync(string tenantInstanceName, CancellationToken cancellationToken)
@@ -57,8 +57,6 @@ namespace Phase
                 _lock.Release();
             }
         }
-
-        public void Dispose() => _publisher.Dispose();
 
         public async Task<T> ExecuteAsync<T>(ICommand<T> command, CancellationToken cancellationToken)
         {

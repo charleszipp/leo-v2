@@ -10,7 +10,8 @@ namespace Phase.Publishers
     {
         private readonly EventPublisher _publisher;
 
-        internal IdemptotentTestingEventPublisher(EventPublisher publisher)
+        internal IdemptotentTestingEventPublisher(EventPublisher publisher, DependencyResolver resolver)
+            :base(resolver)
         {
             _publisher = publisher;
         }
