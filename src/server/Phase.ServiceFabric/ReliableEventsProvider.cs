@@ -25,9 +25,9 @@ namespace Phase.ServiceFabric
             _states = states;
         }
 
-        public async Task DeactivateAsync(CancellationToken cancellationToken)
+        public async Task VacateAsync(CancellationToken cancellationToken)
         {
-            await _provider.DeactivateAsync(cancellationToken).ConfigureAwait(false);
+            await _provider.VacateAsync(cancellationToken).ConfigureAwait(false);
             await _states.RemoveEventsStateAsync().ConfigureAwait(false);
         }
 
@@ -89,11 +89,11 @@ namespace Phase.ServiceFabric
             return rvalues;
         }
 
-        public async Task ActivateAsync(string tenantInstanceName, CancellationToken cancellationToken)
+        public async Task OccupyAsync(string tenantInstanceName, CancellationToken cancellationToken)
         {
             if (!await _states.HasEventsStateAsync().ConfigureAwait(false))
             {
-                await _provider.ActivateAsync(tenantInstanceName, cancellationToken).ConfigureAwait(false);
+                await _provider.OccupyAsync(tenantInstanceName, cancellationToken).ConfigureAwait(false);
                 var events = await _provider.GetEventsAsync(cancellationToken);
                 await OnUpdateEventsState(events, cancellationToken).ConfigureAwait(false);
             }

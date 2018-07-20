@@ -18,7 +18,7 @@ namespace Phase.Providers.Memory
             _tenantKeysFactory = tenantKeysFactory;
         }
 
-        public virtual Task DeactivateAsync(CancellationToken cancellationToken)
+        public virtual Task VacateAsync(CancellationToken cancellationToken)
         {
             TenantInstanceName = null;
             return Task.CompletedTask;
@@ -36,7 +36,7 @@ namespace Phase.Providers.Memory
         public Task<IEnumerable<IEvent>> GetEventsAsync(CancellationToken cancellationToken) =>
             Task.FromResult(_db.Get(_tenantKeysFactory(TenantInstanceName)));
 
-        public Task ActivateAsync(string tenantInstanceName, CancellationToken cancellationToken)
+        public Task OccupyAsync(string tenantInstanceName, CancellationToken cancellationToken)
         {
             TenantInstanceName = tenantInstanceName;
             return Task.CompletedTask;

@@ -43,7 +43,7 @@ namespace Phase.Tests
         {
             _cancellationTokenSource = new CancellationTokenSource();
             var mockId = Guid.NewGuid();
-            await _phase.ActivateAsync(mockId.ToString(), _cancellationTokenSource.Token);
+            await _phase.OccupyAsync(mockId.ToString(), _cancellationTokenSource.Token);
 
             var command = new CreateMock(mockId, "Mock 1");
             await _phase.ExecuteAsync(command, _cancellationTokenSource.Token);
@@ -53,7 +53,7 @@ namespace Phase.Tests
             
             Assert.AreEqual(command.MockName, result.MockName);
 
-            await _phase.DeactivateAsync(_cancellationTokenSource.Token);
+            await _phase.VacateAsync(_cancellationTokenSource.Token);
 
             var resultAfterDeactivate = await _phase.QueryAsync(query, _cancellationTokenSource.Token);
             Assert.IsTrue(string.IsNullOrEmpty(resultAfterDeactivate.MockName));

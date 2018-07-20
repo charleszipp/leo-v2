@@ -18,6 +18,7 @@ namespace Phase
         private readonly Session _session;
         private readonly EventPublisher _publisher;
         public DependencyResolver DependencyResolver { get; }
+        public bool IsOccupied { get; private set; } = false;
 
         internal Phase(DependencyResolver resolver, IEventsProvider eventsProvider, Func<string, IDictionary<string, string>> tenantKeysFactory)
         {
@@ -29,14 +30,15 @@ namespace Phase
             _publisher = new EventPublisher(resolver);
         }
 
-        public async Task ActivateAsync(string tenantInstanceName, CancellationToken cancellationToken)
+        public async Task OccupyAsync(string tenantInstanceName, CancellationToken cancellationToken)
         {
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                await _eventsProvider.ActivateAsync(tenantInstanceName, cancellationToken).ConfigureAwait(false);
+                await _eventsProvider.OccupyAsync(tenantInstanceName, cancellationToken).ConfigureAwait(false);
                 var events = await _eventsProvider.GetEventsAsync(cancellationToken).ConfigureAwait(false);
                 _publisher.Publish(events, cancellationToken);
+                IsOccupied = true;
             }
             finally
             {
@@ -44,13 +46,18 @@ namespace Phase
             }
         }
 
-        public async Task DeactivateAsync(CancellationToken cancellationToken)
+        public async Task VacateAsync(CancellationToken cancellationToken)
         {
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                await _eventsProvider.DeactivateAsync(cancellationToken);
+
+                if (!IsOccupied)
+                    throw new Exception("Phase is already vacant");
+
+                await _eventsProvider.VacateAsync(cancellationToken);
                 DependencyResolver.ReleaseVolatileStates();
+                IsOccupied = false;
             }
             finally
             {
@@ -63,6 +70,10 @@ namespace Phase
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                if (!IsOccupied)
+                    throw new Exception("Phase must be occupied before executing commands and queries");
+
                 var rvalue = await _mediator.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 // before commit make sure we havent been asked to shut down
                 cancellationToken.ThrowIfCancellationRequested();
@@ -89,6 +100,10 @@ namespace Phase
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                if (!IsOccupied)
+                    throw new Exception("Phase must be occupied before executing commands and queries");
+
                 await _mediator.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
                 // before commit make sure we havent been asked to shut down
                 cancellationToken.ThrowIfCancellationRequested();
@@ -108,7 +123,11 @@ namespace Phase
             }
         }
 
-        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken) => 
-            _mediator.Query(query, cancellationToken);
+        public Task<TResult> QueryAsync<TResult>(IQuery<TResult> query, CancellationToken cancellationToken)
+        {
+            if (!IsOccupied)
+                throw new Exception("Phase must be occupied before executing commands and queries");
+            return _mediator.Query(query, cancellationToken);
+        }
     }
 }
