@@ -17,8 +17,10 @@ namespace Phase
         private readonly Mediator _mediator;
         private readonly Session _session;
         private readonly EventPublisher _publisher;
+
         public DependencyResolver DependencyResolver { get; }
-        public bool IsOccupied { get; private set; } = false;
+        public bool IsOccupied { get; private set; }
+        public string TenantId { get; private set; }
 
         internal Phase(DependencyResolver resolver, IEventsProvider eventsProvider, Func<string, IDictionary<string, string>> tenantKeysFactory)
         {
@@ -30,15 +32,20 @@ namespace Phase
             _publisher = new EventPublisher(resolver);
         }
 
-        public async Task OccupyAsync(string tenantInstanceName, CancellationToken cancellationToken)
+        public async Task OccupyAsync(string tenantId, CancellationToken cancellationToken)
         {
             try
             {
                 await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-                await _eventsProvider.OccupyAsync(tenantInstanceName, cancellationToken).ConfigureAwait(false);
+
+                if (IsOccupied)
+                    throw new Exception("Phase is already occupied");
+
+                await _eventsProvider.OccupyAsync(tenantId, cancellationToken).ConfigureAwait(false);
                 var events = await _eventsProvider.GetEventsAsync(cancellationToken).ConfigureAwait(false);
                 _publisher.Publish(events, cancellationToken);
                 IsOccupied = true;
+                TenantId = tenantId;
             }
             finally
             {
@@ -58,6 +65,7 @@ namespace Phase
                 await _eventsProvider.VacateAsync(cancellationToken);
                 DependencyResolver.ReleaseVolatileStates();
                 IsOccupied = false;
+                TenantId = null;
             }
             finally
             {

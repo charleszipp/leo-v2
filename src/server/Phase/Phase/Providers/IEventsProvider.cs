@@ -15,6 +15,6 @@ namespace Phase.Providers
 
         Task<IEnumerable<IEvent>> GetEventsAsync(CancellationToken cancellationToken);
 
-        Task OccupyAsync(string tenantInstanceName, CancellationToken cancellationToken);
+        Task OccupyAsync(string tenantId, CancellationToken cancellationToken);
     }
 }

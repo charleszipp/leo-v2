@@ -76,7 +76,7 @@ namespace Phase.Domains
 
         private void OnApply(IEvent @event)
         {
-            bool hasApply = GetType().GetMethod("Apply",
+            bool hasApply = AggregateRoot.GetType().GetMethod("Apply",
                 BindingFlags.Public | BindingFlags.Instance,
                 null,
                 new Type[] { @event.GetType() },

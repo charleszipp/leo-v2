@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Bindings;
+using TechTalk.SpecFlow.Assist;
 
 namespace Phase.Tests.Features
 {
@@ -38,40 +39,6 @@ namespace Phase.Tests.Features
             _cancellation = new CancellationTokenSource();
         }
 
-        [Given(@"the phase client is vacant")]
-        public async Task GivenThePhaseClientIsVacant()
-        {
-            if (_phase.IsOccupied)
-                await _phase.VacateAsync(_cancellation.Token);
-        }
-
-        [Then(@"an exception should be thrown with message ""(.*)""")]
-        public void ThenAnExceptionShouldBeThrownWithMessage(string exceptionMessage)
-        {
-            Assert.AreEqual(exceptionMessage, ScenarioContext.Current.TestError?.Message);
-        }
-
-        [When(@"executing a command without result")]
-        public Task WhenExecutingACommandWithoutResult() => 
-            _phase.ExecuteAsync(new CreateMock(Guid.NewGuid(), "Mock 1"), _cancellation.Token);
-
-        [When(@"executing a command with result")]
-        public void WhenExecutingACommandWithResult()
-        {
-            ScenarioContext.Current.Pending();
-        }
-
-        [When(@"executing a query")]
-        public Task WhenExecutingAQuery() => 
-            _phase.QueryAsync(new GetMock(), _cancellation.Token);
-
-        [When(@"executing vacate")]
-        public Task WhenExecutingVacate() => 
-            _phase.VacateAsync(_cancellation.Token);
-
-        private IDictionary<string, string> TenantKeyFactory(string tenantInstanceName) => 
-            new Dictionary<string, string> { { "boardid", tenantInstanceName } };
-
         [AfterStep("CatchException")]
         public void CatchException()
         {
@@ -81,5 +48,71 @@ namespace Phase.Tests.Features
                 testStatusProperty.SetValue(ScenarioContext.Current, ScenarioExecutionStatus.OK);
             }
         }
+
+        [Given(@"phase is vacant")]
+        public async Task GivenThePhaseClientIsVacant()
+        {
+            if (_phase.IsOccupied)
+                await _phase.VacateAsync(_cancellation.Token);
+        }
+
+        [Given(@"phase is occupied with tenant id ""(.*)""")]
+        [When(@"occupy phase with tenant id ""(.*)""")]
+        public Task OccupyPhaseWithTenantId(string tenantId) =>
+            _phase.OccupyAsync(tenantId, _cancellation.Token);
+
+        [Then(@"an exception should be thrown with message ""(.*)""")]
+        public void ThenAnExceptionShouldBeThrownWithMessage(string exceptionMessage)
+        {
+            Assert.AreEqual(exceptionMessage, ScenarioContext.Current.TestError?.Message);
+        }
+
+        [Then(@"phase should be occupied with tenant id ""(.*)""")]
+        public void ThenPhaseShouldBeOccupiedWithTenantId(string tenantId)
+        {
+            Assert.IsTrue(_phase.IsOccupied);
+            Assert.AreEqual(tenantId, _phase.TenantId);
+        }
+
+        [Then(@"phase should be vacant")]
+        public void ThenPhaseShouldBeVacant()
+        {
+            Assert.IsFalse(_phase.IsOccupied);
+            Assert.IsNull(_phase.TenantId);
+        }
+
+        [When(@"vacate phase")]
+        public Task VacatePhase() =>
+            _phase.VacateAsync(_cancellation.Token);
+
+        [When(@"executing a command without result")]
+        public Task WhenExecutingACommandWithoutResult() =>
+            _phase.ExecuteAsync(new CreateMock(Guid.NewGuid(), "Mock 1"), _cancellation.Token);
+
+        [When(@"executing a query")]
+        public Task WhenExecutingAQuery() =>
+            _phase.QueryAsync(new GetMock(), _cancellation.Token);
+
+        [When(@"phase executes create mock command")]
+        public Task WhenPhaseExecutesCreateMockCommand(Table table) => 
+            _phase.ExecuteAsync(table.CreateImmutableInstance<CreateMock>(), _cancellation.Token);
+
+        [When(@"phase executes get mock query")]
+        public async Task WhenPhaseExecutesGetMockQuery()
+        {
+            var result = await _phase.QueryAsync(new GetMock(), _cancellation.Token);
+            ScenarioContext.Current["GetMockResult"] = result;
+        }
+
+        [Then(@"the query should return mock name ""(.*)""")]
+        public void ThenTheQueryShouldReturnMockName(string expectedMockName)
+        {
+            GetMockResult result = (GetMockResult)ScenarioContext.Current["GetMockResult"];
+            Assert.AreEqual(expectedMockName, result.MockName);
+        }
+
+
+        private IDictionary<string, string> TenantKeyFactory(string tenantInstanceName) =>
+            new Dictionary<string, string> { { "boardid", tenantInstanceName } };
     }
 }

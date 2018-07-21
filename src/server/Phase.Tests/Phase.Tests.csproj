@@ -64,7 +64,13 @@
     <Compile Include="Commands\CreateMock.cs" />
     <Compile Include="Commands\CreateMockHandler.cs" />
     <Compile Include="Events\MockCreated.cs" />
+    <Compile Include="Features\CommandsAndQueries.feature.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CommandsAndQueries.feature</DependentUpon>
+    </Compile>
     <Compile Include="Features\PhaseBindings.cs" />
+    <Compile Include="Features\SpecflowTableExtensions.cs" />
     <Compile Include="Features\StateTransitions.feature.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -79,6 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Features\CommandsAndQueries.feature">
+      <Generator>SpecFlowSingleFileGenerator</Generator>
+      <LastGenOutput>CommandsAndQueries.feature.cs</LastGenOutput>
+    </None>
     <None Include="Features\StateTransitions.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>StateTransitions.feature.cs</LastGenOutput>

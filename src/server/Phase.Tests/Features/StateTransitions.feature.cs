@@ -93,7 +93,7 @@ namespace Phase.Tests.Features
 #line 4
 this.ScenarioSetup(scenarioInfo);
 #line 5
- testRunner.Given("the phase client is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("phase is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 6
  testRunner.When("executing a command without result", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 7
@@ -114,7 +114,7 @@ this.ScenarioSetup(scenarioInfo);
 #line 10
 this.ScenarioSetup(scenarioInfo);
 #line 11
- testRunner.Given("the phase client is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("phase is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 12
  testRunner.When("executing a query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 13
@@ -135,11 +135,163 @@ this.ScenarioSetup(scenarioInfo);
 #line 16
 this.ScenarioSetup(scenarioInfo);
 #line 17
- testRunner.Given("the phase client is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("phase is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 18
- testRunner.When("executing vacate", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+ testRunner.When("vacate phase", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 19
  testRunner.Then("an exception should be thrown with message \"Phase is already vacant\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("occupy vacant phase")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "StateTransitions")]
+        public virtual void OccupyVacantPhase()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("occupy vacant phase", ((string[])(null)));
+#line 21
+this.ScenarioSetup(scenarioInfo);
+#line 22
+ testRunner.Given("phase is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 23
+ testRunner.When("occupy phase with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 24
+ testRunner.Then("phase should be occupied with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("occupy occupied phase")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "StateTransitions")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("CatchException")]
+        public virtual void OccupyOccupiedPhase()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("occupy occupied phase", new string[] {
+                        "CatchException"});
+#line 27
+this.ScenarioSetup(scenarioInfo);
+#line 28
+ testRunner.Given("phase is occupied with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 29
+ testRunner.When("occupy phase with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 30
+ testRunner.Then("an exception should be thrown with message \"Phase is already occupied\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("vacate occupied phase")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "StateTransitions")]
+        public virtual void VacateOccupiedPhase()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("vacate occupied phase", ((string[])(null)));
+#line 32
+this.ScenarioSetup(scenarioInfo);
+#line 33
+ testRunner.Given("phase is occupied with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 34
+ testRunner.When("vacate phase", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 35
+ testRunner.Then("phase should be vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("resuse phase instance for different tenant")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "StateTransitions")]
+        public virtual void ResusePhaseInstanceForDifferentTenant()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("resuse phase instance for different tenant", ((string[])(null)));
+#line 37
+this.ScenarioSetup(scenarioInfo);
+#line 38
+ testRunner.Given("phase is occupied with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+            TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Value"});
+            table1.AddRow(new string[] {
+                        "MockId",
+                        "63921ebb-b2b4-44fd-b441-17e730556ac8"});
+            table1.AddRow(new string[] {
+                        "MockName",
+                        "Mock 1"});
+#line 39
+ testRunner.When("phase executes create mock command", ((string)(null)), table1, "When ");
+#line 43
+ testRunner.And("vacate phase", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 44
+ testRunner.And("occupy phase with tenant id \"0e0c4165-b386-45dc-a278-12bfe46f5921\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Value"});
+            table2.AddRow(new string[] {
+                        "MockId",
+                        "0e0c4165-b386-45dc-a278-12bfe46f5921"});
+            table2.AddRow(new string[] {
+                        "MockName",
+                        "Mock 2"});
+#line 45
+ testRunner.And("phase executes create mock command", ((string)(null)), table2, "And ");
+#line 49
+ testRunner.And("phase executes get mock query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 50
+ testRunner.Then("the query should return mock name \"Mock 2\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+            this.ScenarioCleanup();
+        }
+        
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("reuse phase instance for different tenant then occupy for first tenant")]
+        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "StateTransitions")]
+        public virtual void ReusePhaseInstanceForDifferentTenantThenOccupyForFirstTenant()
+        {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("reuse phase instance for different tenant then occupy for first tenant", ((string[])(null)));
+#line 52
+this.ScenarioSetup(scenarioInfo);
+#line 53
+ testRunner.Given("phase is occupied with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+            TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Value"});
+            table3.AddRow(new string[] {
+                        "MockId",
+                        "63921ebb-b2b4-44fd-b441-17e730556ac8"});
+            table3.AddRow(new string[] {
+                        "MockName",
+                        "Mock 1"});
+#line 54
+ testRunner.When("phase executes create mock command", ((string)(null)), table3, "When ");
+#line 58
+ testRunner.And("vacate phase", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 59
+ testRunner.And("occupy phase with tenant id \"0e0c4165-b386-45dc-a278-12bfe46f5921\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                        "Field",
+                        "Value"});
+            table4.AddRow(new string[] {
+                        "MockId",
+                        "0e0c4165-b386-45dc-a278-12bfe46f5921"});
+            table4.AddRow(new string[] {
+                        "MockName",
+                        "Mock 2"});
+#line 60
+ testRunner.And("phase executes create mock command", ((string)(null)), table4, "And ");
+#line 64
+ testRunner.And("vacate phase", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 65
+ testRunner.And("occupy phase with tenant id \"63921ebb-b2b4-44fd-b441-17e730556ac8\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 66
+ testRunner.And("phase executes get mock query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 67
+ testRunner.Then("the query should return mock name \"Mock 1\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
