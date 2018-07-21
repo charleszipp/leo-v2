@@ -104,27 +104,6 @@ this.ScenarioSetup(scenarioInfo);
         }
         
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("execute command with result against a vacant phase")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "StateTransitions")]
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("CatchException")]
-        public virtual void ExecuteCommandWithResultAgainstAVacantPhase()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("execute command with result against a vacant phase", new string[] {
-                        "CatchException"});
-#line 10
-this.ScenarioSetup(scenarioInfo);
-#line 11
- testRunner.Given("the phase client is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 12
- testRunner.When("executing a command with result", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 13
- testRunner.Then("an exception should be thrown with message \"Phase must be occupied before executi" +
-                    "ng commands and queries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [Microsoft.VisualStudio.TestTools.UnitTesting.TestMethodAttribute()]
         [Microsoft.VisualStudio.TestTools.UnitTesting.DescriptionAttribute("execute query against a vacant phase")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestPropertyAttribute("FeatureTitle", "StateTransitions")]
         [Microsoft.VisualStudio.TestTools.UnitTesting.TestCategoryAttribute("CatchException")]
@@ -132,13 +111,13 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("execute query against a vacant phase", new string[] {
                         "CatchException"});
-#line 16
+#line 10
 this.ScenarioSetup(scenarioInfo);
-#line 17
+#line 11
  testRunner.Given("the phase client is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 18
+#line 12
  testRunner.When("executing a query", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 19
+#line 13
  testRunner.Then("an exception should be thrown with message \"Phase must be occupied before executi" +
                     "ng commands and queries\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
@@ -153,13 +132,13 @@ this.ScenarioSetup(scenarioInfo);
         {
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("vacate a vacant phase", new string[] {
                         "CatchException"});
-#line 22
+#line 16
 this.ScenarioSetup(scenarioInfo);
-#line 23
+#line 17
  testRunner.Given("the phase client is vacant", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 24
+#line 18
  testRunner.When("executing vacate", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 25
+#line 19
  testRunner.Then("an exception should be thrown with message \"Phase is already vacant\"", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();

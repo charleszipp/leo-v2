@@ -21,10 +21,4 @@ namespace Phase.Domains
     {
         public abstract Task Execute(TCommand command, CancellationToken cancellationToken);
     }
-
-    public abstract class CommandHandler<TCommand, TReturn> : CommandHandler, IHandleCommand<TCommand, TReturn>
-        where TCommand : ICommand<TReturn>
-    {
-        public abstract Task<TReturn> Execute(TCommand command, CancellationToken cancellationToken);
-    }
 }

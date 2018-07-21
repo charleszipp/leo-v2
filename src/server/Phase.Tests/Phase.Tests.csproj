@@ -76,7 +76,6 @@
     <Compile Include="Queries\GetMock.cs" />
     <Compile Include="Queries\GetMockHandler.cs" />
     <Compile Include="Queries\GetMockResult.cs" />
-    <Compile Include="UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

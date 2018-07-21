@@ -38,13 +38,6 @@ namespace Phase
             return rvalue;
         }
 
-        internal IHandleCommand<TCommand, TResult> GetCommandHandler<TCommand, TResult>() where TCommand : ICommand<TResult>
-        {
-            var rvalue = Single<IHandleCommand<TCommand, TResult>>();
-            InitializeCommandHandler(rvalue);
-            return rvalue;
-        }
-
         internal IEnumerable<EventSubscriber> GetEventSubscribers(IEvent @event)
         {
             var eventType = @event.GetType();
@@ -63,11 +56,6 @@ namespace Phase
             where TCommandHandler : class, IHandleCommand<TCommand>
             where TCommand : ICommand => 
             RegisterTransient<IHandleCommand<TCommand>, TCommandHandler>();
-
-        internal void RegisterCommandHandler<TCommandHandler, TCommand, TResult>()
-            where TCommandHandler : class, IHandleCommand<TCommand, TResult>
-            where TCommand : ICommand<TResult> => 
-            RegisterTransient<IHandleCommand<TCommand, TResult>, TCommandHandler>();
 
         internal void RegisterQueryHandler<TQueryHandler, TQuery, TResult>()
             where TQueryHandler : class, IHandleQuery<TQuery, TResult>

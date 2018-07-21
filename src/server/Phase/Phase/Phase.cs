@@ -65,36 +65,6 @@ namespace Phase
             }
         }
 
-        public async Task<T> ExecuteAsync<T>(ICommand<T> command, CancellationToken cancellationToken)
-        {
-            try
-            {
-                await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-                if (!IsOccupied)
-                    throw new Exception("Phase must be occupied before executing commands and queries");
-
-                var rvalue = await _mediator.ExecuteAsync(command, cancellationToken).ConfigureAwait(false);
-                // before commit make sure we havent been asked to shut down
-                cancellationToken.ThrowIfCancellationRequested();
-                var events = _session.Flush();
-                await _eventsProvider.CommitAsync(events, cancellationToken).ConfigureAwait(false);
-                _publisher.Publish(events, cancellationToken);
-
-                return rvalue;
-            }
-            catch (Exception)
-            {
-                // rollback any new events produced from the command
-                _session.Flush();
-                throw;
-            }
-            finally
-            {
-                _lock.Release();
-            }
-        }
-
         public async Task ExecuteAsync(ICommand command, CancellationToken cancellationToken)
         {
             try
