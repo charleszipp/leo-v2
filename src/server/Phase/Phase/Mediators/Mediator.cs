@@ -14,16 +14,16 @@ namespace Phase.Mediators
 
         internal Mediator(DependencyResolver resolver) => _resolver = resolver;
 
-        public Task<TResult> Query<TResult>(IQuery<TResult> query, CancellationToken cancellationToken)
+        public Task<TResult> Query<TResult>(ITenantContext tenant, IQuery<TResult> query, CancellationToken cancellationToken)
         {
             var invoker = (QueryInvoker<TResult>)Activator.CreateInstance(typeof(QueryInvoker<,>).MakeGenericType(query.GetType(), typeof(TResult)));
             return invoker.InvokeAsync(query, _resolver, cancellationToken);
         }
 
-        public Task ExecuteAsync(ICommand command, CancellationToken cancellationToken)
+        public Task ExecuteAsync(ITenantContext tenant, ICommand command, CancellationToken cancellationToken)
         {
             var invoker = (VoidCommandInvoker)Activator.CreateInstance(typeof(VoidCommandInvoker<>).MakeGenericType(command.GetType()));
-            return invoker.InvokeAsync(command, _resolver, cancellationToken);
+            return invoker.InvokeAsync(tenant, command, _resolver, cancellationToken);
         }
     }
 }

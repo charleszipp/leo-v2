@@ -6,13 +6,13 @@ namespace Phase.Mediators
 {
     internal abstract class VoidCommandInvoker
     {
-        internal abstract Task InvokeAsync(ICommand command, DependencyResolver resolver, CancellationToken cancellationToken);
+        internal abstract Task InvokeAsync(ITenantContext tenant, ICommand command, DependencyResolver resolver, CancellationToken cancellationToken);
     }
 
     internal class VoidCommandInvoker<TCommand> : VoidCommandInvoker
         where TCommand : ICommand
     {
-        internal override Task InvokeAsync(ICommand command, DependencyResolver resolver, CancellationToken cancellationToken) => 
-            resolver.GetCommandHandler<TCommand>().Execute((TCommand)command, cancellationToken);
+        internal override Task InvokeAsync(ITenantContext tenant, ICommand command, DependencyResolver resolver, CancellationToken cancellationToken) => 
+            resolver.GetCommandHandler<TCommand>(tenant).Execute((TCommand)command, cancellationToken);
     }
 }

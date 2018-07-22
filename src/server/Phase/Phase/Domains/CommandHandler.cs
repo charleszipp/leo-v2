@@ -9,6 +9,8 @@ namespace Phase.Domains
     {
         internal Session _session { get; set; }
 
+        public string TenantId { get; internal set; }
+
         protected Task GetAggregateAsync<TAggregate>(Guid id, CancellationToken cancellationToken)
             where TAggregate : AggregateRoot => _session.GetOrAddAsync<TAggregate>(id, cancellationToken);
 

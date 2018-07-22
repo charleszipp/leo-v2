@@ -63,6 +63,8 @@
   <ItemGroup>
     <Compile Include="Commands\CreateMock.cs" />
     <Compile Include="Commands\CreateMockHandler.cs" />
+    <Compile Include="Commands\LinkAccount.cs" />
+    <Compile Include="Commands\LinkAccountHandler.cs" />
     <Compile Include="Events\MockCreated.cs" />
     <Compile Include="Features\CommandsAndQueries.feature.cs">
       <AutoGen>True</AutoGen>
@@ -76,6 +78,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>StateTransitions.feature</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountEntity.cs" />
+    <Compile Include="Models\BudgetAggregate.cs" />
     <Compile Include="Models\MockAggregate.cs" />
     <Compile Include="Models\MockReadModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -52,7 +52,7 @@ namespace Phase.Tests.Features
         [Given(@"phase is vacant")]
         public async Task GivenThePhaseClientIsVacant()
         {
-            if (_phase.IsOccupied)
+            if (_phase.State == States.PhaseStates.Occupied)
                 await _phase.VacateAsync(_cancellation.Token);
         }
 
@@ -70,14 +70,14 @@ namespace Phase.Tests.Features
         [Then(@"phase should be occupied with tenant id ""(.*)""")]
         public void ThenPhaseShouldBeOccupiedWithTenantId(string tenantId)
         {
-            Assert.IsTrue(_phase.IsOccupied);
+            Assert.AreEqual(States.PhaseStates.Occupied, _phase.State);
             Assert.AreEqual(tenantId, _phase.TenantId);
         }
 
         [Then(@"phase should be vacant")]
         public void ThenPhaseShouldBeVacant()
         {
-            Assert.IsFalse(_phase.IsOccupied);
+            Assert.AreEqual(States.PhaseStates.Vacant, _phase.State);
             Assert.IsNull(_phase.TenantId);
         }
 

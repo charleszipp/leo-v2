@@ -48,6 +48,7 @@
     <Compile Include="IHandleEvent.cs" />
     <Compile Include="IHandleQuery.cs" />
     <Compile Include="IQuery.cs" />
+    <Compile Include="ITenantContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -6,9 +6,9 @@ namespace Leo.Boards
 {
     internal sealed class BoardService : StatefulService
     {
-        private readonly IPhase _phase;
+        private readonly Phase _phase;
 
-        public BoardService(StatefulServiceContext context, IPhase phase)
+        public BoardService(StatefulServiceContext context, Phase phase)
             : base(context)
         {
             _phase = phase;

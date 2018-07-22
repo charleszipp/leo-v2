@@ -62,11 +62,13 @@
     <Compile Include="Domains\PhaseAggregateAttribute.cs" />
     <Compile Include="Domains\Session.cs" />
     <Compile Include="Builders\PhaseBuilder.cs" />
+    <Compile Include="States\OccupiedState.cs" />
+    <Compile Include="Phase.cs" />
+    <Compile Include="States\PhaseState.cs" />
     <Compile Include="Publishers\EventPublisher.cs" />
     <Compile Include="Mediators\CommandInvoker.cs" />
     <Compile Include="Mediators\Mediator.cs" />
     <Compile Include="Mediators\QueryInvoker.cs" />
-    <Compile Include="Phase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\IEventsProvider.cs" />
     <Compile Include="Providers\Memory\InMemoryEventCollection.cs" />
@@ -74,6 +76,8 @@
     <Compile Include="Providers\Memory\InMemoryEventsProvider.cs" />
     <Compile Include="Publishers\EventSubscriber.cs" />
     <Compile Include="Publishers\IdemptotentTestingEventPublisher.cs" />
+    <Compile Include="States\PhaseStates.cs" />
+    <Compile Include="States\VacantState.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Phase.Interfaces\Phase.Interfaces.csproj">

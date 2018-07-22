@@ -31,10 +31,10 @@ namespace Phase
         internal TAggregate GetAggregateRoot<TAggregate>() where TAggregate : AggregateRoot => 
             AggregateProxy<TAggregate>.Create(Single<TAggregate>());
 
-        internal IHandleCommand<TCommand> GetCommandHandler<TCommand>() where TCommand : ICommand
+        internal IHandleCommand<TCommand> GetCommandHandler<TCommand>(ITenantContext tenant) where TCommand : ICommand
         {
             var rvalue = Single<IHandleCommand<TCommand>>();
-            InitializeCommandHandler(rvalue);
+            InitializeCommandHandler(rvalue, tenant);
             return rvalue;
         }
 
@@ -87,11 +87,13 @@ namespace Phase
         internal void ReleaseVolatileStates() => 
             ReleaseAll<IVolatileState>();
 
-        private void InitializeCommandHandler(object commandHandler)
+        private void InitializeCommandHandler(object iCommandHandler, ITenantContext tenant)
         {
-            if (commandHandler is CommandHandler)
+            if (iCommandHandler is CommandHandler)
             {
-                ((CommandHandler)commandHandler)._session = _session;
+                var commandHandler = (CommandHandler)iCommandHandler;
+                commandHandler._session = _session;
+                commandHandler.TenantId = tenant.TenantId;
             }
         }
     }
