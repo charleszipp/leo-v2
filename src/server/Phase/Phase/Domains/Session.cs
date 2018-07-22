@@ -29,13 +29,13 @@ namespace Phase.Domains
             return rvalues;
         }        
 
-        internal async Task<T> GetOrAddAsync<T>(Guid entityId, CancellationToken cancellationToken)
+        internal async Task<T> GetOrAddAsync<T>(string entityId, CancellationToken cancellationToken)
             where T : AggregateRoot => (T)(await GetOrAddDescriptorAsync<T>(entityId, cancellationToken)).AggregateRoot;
 
-        internal async Task ApplyEventsAsync<T>(Guid entityId, CancellationToken cancellationToken, params IEvent[] events)
+        internal async Task ApplyEventsAsync<T>(string entityId, CancellationToken cancellationToken, params IEvent[] events)
             where T : AggregateRoot => (await GetOrAddDescriptorAsync<T>(entityId, cancellationToken)).Apply(events);
 
-        private async Task<AggregateDescriptor> GetOrAddDescriptorAsync<T>(Guid entityId, CancellationToken cancellationToken)
+        private async Task<AggregateDescriptor> GetOrAddDescriptorAsync<T>(string entityId, CancellationToken cancellationToken)
             where T : AggregateRoot
         {
             var aggregateId = GetAggregateIdFromEntityId<T>(entityId);
@@ -78,7 +78,7 @@ namespace Phase.Domains
             return root;
         }
 
-        private string GetAggregateIdFromEntityId<T>(Guid entityId)
+        private string GetAggregateIdFromEntityId<T>(string entityId)
         {
             var aggregateType = typeof(T);
             var aggAttribute = aggregateType.GetCustomAttribute<PhaseAggregateAttribute>(false);

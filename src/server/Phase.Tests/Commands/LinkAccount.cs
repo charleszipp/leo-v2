@@ -5,11 +5,10 @@ namespace Phase.Tests.Commands
 {
     public class LinkAccount : ICommand
     {
-        public LinkAccount(Guid budgetId, Guid accountId, string accountNumer, string accountName)
+        public LinkAccount(Guid accountId, string accountNumer, string accountName)
         {
-            BudgetId = budgetId;
             AccountId = accountId;
-            AccountNumer = accountNumer;
+            AccountNumber = accountNumer;
             AccountName = accountName;
         }
 
@@ -17,8 +16,6 @@ namespace Phase.Tests.Commands
 
         public string AccountName { get; }
 
-        public string AccountNumer { get; }
-
-        public Guid BudgetId { get; }
+        public string AccountNumber { get; }
     }
 }

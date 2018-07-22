@@ -22,7 +22,6 @@ namespace Phase.Tests.Features
     {
         private readonly CancellationTokenSource _cancellation;
         private readonly Phase _phase;
-        private Exception _exception;
 
         public PhaseBindings()
         {
@@ -31,10 +30,14 @@ namespace Phase.Tests.Features
 
             _phase = new PhaseBuilder(dependencyResolver, eventsProvider, TenantKeyFactory)
                 .WithCommandHandler<CreateMockHandler, CreateMock>()
+                .WithCommandHandler<LinkAccountHandler, LinkAccount>()
                 .WithQueryHandler<GetMockHandler, GetMock, GetMockResult>()
                 .WithAggregateRoot<MockAggregate>()
                 .WithReadModel<MockReadModel>()
+                .WithAggregateRoot<BudgetAggregate>()
+                .WithReadModel<BudgetLedger>()
                 .WithStatefulEventSubscriber<MockCreated, MockReadModel>()
+                .WithStatefulEventSubscriber<AccountLinked, BudgetLedger>()
                 .Build();
             _cancellation = new CancellationTokenSource();
         }
@@ -87,7 +90,7 @@ namespace Phase.Tests.Features
 
         [When(@"executing a command without result")]
         public Task WhenExecutingACommandWithoutResult() =>
-            _phase.ExecuteAsync(new CreateMock(Guid.NewGuid(), "Mock 1"), _cancellation.Token);
+            _phase.ExecuteAsync(new CreateMock("Mock 1"), _cancellation.Token);
 
         [When(@"executing a query")]
         public Task WhenExecutingAQuery() =>

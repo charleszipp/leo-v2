@@ -11,10 +11,10 @@ namespace Phase.Domains
 
         public string TenantId { get; internal set; }
 
-        protected Task GetAggregateAsync<TAggregate>(Guid id, CancellationToken cancellationToken)
+        protected Task<TAggregate> GetAggregateAsync<TAggregate>(string id, CancellationToken cancellationToken)
             where TAggregate : AggregateRoot => _session.GetOrAddAsync<TAggregate>(id, cancellationToken);
 
-        protected async Task RaiseEventAsync<TAggregate>(Guid id, IEvent @event, CancellationToken cancellationToken)
+        protected async Task RaiseEventAsync<TAggregate>(string id, IEvent @event, CancellationToken cancellationToken)
                     where TAggregate : AggregateRoot => await _session.ApplyEventsAsync<TAggregate>(id, cancellationToken, @event);
     }
 

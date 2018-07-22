@@ -15,7 +15,7 @@ namespace Phase.Tests.Commands
             if (string.IsNullOrEmpty(command.MockName))
                 throw new ArgumentException("Mock name required");
 
-            await RaiseEventAsync<MockAggregate>(command.MockId, new MockCreated(command.MockId, command.MockName), cancellationToken);
+            await RaiseEventAsync<MockAggregate>(TenantId, new MockCreated(command.MockName), cancellationToken);
         }
     }
 }
